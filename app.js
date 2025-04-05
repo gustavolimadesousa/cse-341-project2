@@ -4,6 +4,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const YAML = require("yamljs");
 const { connectToDatabase, closeConnection } = require("./db");
+const swaggerDocument = require('./swagger.json'); // Ensure you have a swagger.json file
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -35,7 +36,7 @@ const options = {
 };
 
 const swaggerSpec = swaggerJsdoc(options);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Health check endpoint
 app.get("/health", (req, res) => {
@@ -91,3 +92,5 @@ async function startServer() {
 }
 
 startServer();
+
+module.exports = app;
