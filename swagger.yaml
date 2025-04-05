@@ -1,0 +1,315 @@
+openapi: 3.0.0
+info:
+  title: User Transaction API
+  description: API for managing users and their transactions
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+    description: Development server
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          pattern: "^[0-9a-fA-F]{24}$"
+          example: "507f1f77bcf86cd799439011"
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: "john@example.com"
+        balance:
+          type: number
+          format: float
+          example: 1000.50
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - name
+        - email
+        - balance
+
+    UserInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: "john@example.com"
+      required:
+        - name
+        - email
+
+    Transaction:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of the transaction
+        userId:
+          type: string
+          description: The ID of the user associated with the transaction
+        amount:
+          type: number
+          format: float
+          description: The amount of the transaction
+        type:
+          type: string
+          description: The type of the transaction (e.g., debit, credit)
+        description:
+          type: string
+          description: A description of the transaction
+        date:
+          type: string
+          format: date-time
+          description: The date and time when the transaction occurred
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp when the transaction was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: The timestamp when the transaction was last updated
+      required:
+        - userId
+        - amount
+        - type
+        - date
+
+    TransactionInput:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          example: 250.75
+        type:
+          type: string
+          example: "credit"
+        description:
+          type: string
+          example: "Salary for April"
+        date:
+          type: string
+          format: date-time
+          example: "2025-04-05T10:30:00Z"
+      required:
+        - amount
+        - type
+        - date
+
+  parameters:
+    userIdParam:
+      name: userId
+      in: path
+      required: true
+      description: MongoDB ObjectId of the user
+      schema:
+        type: string
+        pattern: "^[0-9a-fA-F]{24}$"
+        example: "507f1f77bcf86cd799439011"
+
+    transactionIdParam:
+      name: transactionId
+      in: path
+      required: true
+      description: The ID of the transaction
+      schema:
+        type: string
+        pattern: "^[0-9a-fA-F]{24}$"
+        example: "507f1f77bcf86cd799439012"
+
+paths:
+  /users:
+    get:
+      summary: Get all users
+      responses:
+        "200":
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "500":
+          description: Internal server error
+
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid input
+        "500":
+          description: Internal server error
+
+  /users/{userId}:
+    get:
+      summary: Get a specific user
+      parameters:
+        - $ref: "#/components/parameters/userIdParam"
+      responses:
+        "200":
+          description: A specific user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+
+    put:
+      summary: Update a specific user
+      parameters:
+        - $ref: "#/components/parameters/userIdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid input
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+
+    delete:
+      summary: Delete a specific user
+      parameters:
+        - $ref: "#/components/parameters/userIdParam"
+      responses:
+        "200":
+          description: User deleted successfully
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+
+  /users/{userId}/transactions:
+    get:
+      summary: Get all transactions for a user
+      parameters:
+        - $ref: "#/components/parameters/userIdParam"
+      responses:
+        "200":
+          description: A list of transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+
+  /users/{userId}/transactions/{transactionId}:
+    get:
+      summary: Get a specific transaction
+      parameters:
+        - $ref: "#/components/parameters/userIdParam"
+        - $ref: "#/components/parameters/transactionIdParam"
+      responses:
+        "200":
+          description: A specific transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "404":
+          description: Transaction or user not found
+        "500":
+          description: Internal server error
+
+    put:
+      summary: Update a specific transaction
+      parameters:
+        - $ref: "#/components/parameters/userIdParam"
+        - $ref: "#/components/parameters/transactionIdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionInput"
+      responses:
+        "200":
+          description: Transaction updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "400":
+          description: Invalid input
+        "404":
+          description: Transaction or user not found
+        "500":
+          description: Internal server error
+
+    delete:
+      summary: Delete a specific transaction
+      parameters:
+        - $ref: "#/components/parameters/userIdParam"
+        - $ref: "#/components/parameters/transactionIdParam"
+      responses:
+        "200":
+          description: Transaction deleted successfully
+        "404":
+          description: Transaction or user not found
+        "500":
+          description: Internal server error
+
+  /api/users/{userId}:
+    get:
+      summary: Get user by ID
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The ID of the user
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
