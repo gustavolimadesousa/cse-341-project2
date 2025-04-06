@@ -5,6 +5,7 @@ const swaggerJsdoc = require("swagger-jsdoc");
 const YAML = require("yamljs");
 const { connectToDatabase, closeConnection } = require("./db");
 const mongoose = require('mongoose');
+const cors = require("cors"); // Add this line
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +13,13 @@ const PORT = process.env.PORT || 3000;
 // Enhanced Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const corsOptions = {
+  origin: "https://cse-341-project2-74cg.onrender.com", // Replace with your frontend's domain
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+};
+app.use(cors(corsOptions)); // Enable CORS with options
 
 // Error handling middleware
 app.use((err, req, res, next) => {
