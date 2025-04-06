@@ -55,7 +55,7 @@ async function startServer() {
     const mongoUri = process.env.MONGODB_URI;
     const dbName = process.env.DB_NAME;
 
-    mongoose.connect(mongoUri, { dbName, useNewUrlParser: true, useUnifiedTopology: true })
+    mongoose.connect(mongoUri, { dbName })
       .then(() => console.log('Connected to MongoDB'))
       .catch(err => console.error('MongoDB connection error:', err));
 
