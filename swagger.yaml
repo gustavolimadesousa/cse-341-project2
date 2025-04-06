@@ -4,8 +4,8 @@ info:
   description: API for managing users and their transactions
   version: 1.0.0
 servers:
-  - url: http://localhost:3000/api
-    description: Development server
+  - url: https://cse-341-project2-74cg.onrender.com/api
+    description: Production server
 
 components:
   schemas:

@@ -4,7 +4,7 @@ services:
     env: node
     region: oregon
     buildCommand: "npm install"
-    startCommand: "npm start"
+    startCommand: "node app.js"
     plan: free
     envVars:
       - key: MONGODB_URI
