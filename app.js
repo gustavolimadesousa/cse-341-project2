@@ -4,6 +4,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const YAML = require("yamljs");
 const { connectToDatabase, closeConnection } = require("./db");
+const mongoose = require('mongoose');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -50,6 +51,13 @@ async function startServer() {
     // First connect to database
     const db = await connectToDatabase();
     console.log(`Connected to database: ${db.databaseName}`);
+
+    const mongoUri = process.env.MONGODB_URI;
+    const dbName = process.env.DB_NAME;
+
+    mongoose.connect(mongoUri, { dbName, useNewUrlParser: true, useUnifiedTopology: true })
+      .then(() => console.log('Connected to MongoDB'))
+      .catch(err => console.error('MongoDB connection error:', err));
 
     // Then start Express server
     const server = app.listen(PORT, () => {
