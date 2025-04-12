@@ -6,6 +6,8 @@ info:
 servers:
   - url: https://cse-341-project2-74cg.onrender.com/api
     description: Production server
+  - url: http://localhost:3000/api
+    description: Local development server
 
 components:
   schemas:

@@ -4,7 +4,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const YAML = require("yamljs");
 const { connectToDatabase, closeConnection } = require("./db");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const cors = require("cors"); // Add this line
 
 const app = express();
@@ -15,7 +15,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
-  origin: "https://cse-341-project2-74cg.onrender.com", // Replace with your frontend's domain
+  origin: [
+    "https://cse-341-project2-74cg.onrender.com",
+    "http://localhost:3000",
+  ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };
@@ -63,9 +66,10 @@ async function startServer() {
     const mongoUri = process.env.MONGODB_URI;
     const dbName = process.env.DB_NAME;
 
-    mongoose.connect(mongoUri, { dbName })
-      .then(() => console.log('Connected to MongoDB'))
-      .catch(err => console.error('MongoDB connection error:', err));
+    mongoose
+      .connect(mongoUri, { dbName })
+      .then(() => console.log("Connected to MongoDB"))
+      .catch((err) => console.error("MongoDB connection error:", err));
 
     // Then start Express server
     const server = app.listen(PORT, () => {
